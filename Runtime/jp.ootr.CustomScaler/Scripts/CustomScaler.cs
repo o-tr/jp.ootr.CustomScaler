@@ -1,10 +1,12 @@
-﻿using UdonSharp;
+﻿using jp.ootr.common;
+using UdonSharp;
 using UnityEngine;
+using VRC.SDKBase;
 
 namespace jp.ootr.CustomScaler
 {
-    [UdonBehaviourSyncMode(BehaviourSyncMode.NoVariableSync)]
-    public class CustomScaler : UdonSharpBehaviour
+    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
+    public class CustomScaler : BaseClass
     {
         private int _customScale = 10;
         [SerializeField] internal int minScale = 1;
@@ -13,6 +15,8 @@ namespace jp.ootr.CustomScaler
         [SerializeField] internal int scaleResolution = 10;
         [SerializeField] internal GameObject[] scaleTargetGameObject;
         [SerializeField] internal GameObject[] reverseScaleTargetGameObject;
+        [UdonSynced] private int _syncedScale = 10;
+        [SerializeField] internal bool isSynced = false;
         
         public void ScaleUp()
         {
@@ -48,6 +52,26 @@ namespace jp.ootr.CustomScaler
                 if (obj == null) continue;
                 obj.transform.localScale = new Vector3(reverseScale, reverseScale, reverseScale);
             }
+
+            if (!isSynced) return;
+            _syncedScale = _customScale;
+            Sync();
+        }
+
+        public override void _OnDeserialization()
+        {
+            base._OnDeserialization();
+            if (!isSynced) return;
+            _customScale = _syncedScale;
+            ApplyScale();
+        }
+
+        public override void OnPlayerJoined(VRCPlayerApi player)
+        {
+            base.OnPlayerJoined(player);
+            if (!isSynced || !Networking.IsOwner(gameObject)) return;
+            _syncedScale = _customScale;
+            Sync();
         }
     }
 }
