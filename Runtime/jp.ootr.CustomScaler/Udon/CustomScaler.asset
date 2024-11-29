@@ -1273,7 +1273,7 @@ MonoBehaviour:
       Data: 79|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: jp.ootr.CustomScaler.IScaleEventReceiver[], jp.ootr.CustomScaler
+      Data: UdonSharp.UdonSharpBehaviour[], UdonSharp.Runtime
     - Name: 
       Entry: 8
       Data: 

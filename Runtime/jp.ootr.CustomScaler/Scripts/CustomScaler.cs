@@ -17,7 +17,7 @@ namespace jp.ootr.CustomScaler
         [SerializeField] internal GameObject[] reverseScaleTargetGameObject;
         [UdonSynced] private int _syncedScale = 10;
         [SerializeField] internal bool isSynced = false;
-        internal IScaleEventReceiver[] ScaleEventReceivers = new IScaleEventReceiver[0];
+        internal UdonSharpBehaviour[] ScaleEventReceivers = new UdonSharpBehaviour[0];
         
         public void ScaleUp()
         {
@@ -57,7 +57,7 @@ namespace jp.ootr.CustomScaler
             foreach (var receiver in ScaleEventReceivers)
             {
                 if (receiver == null) continue;
-                receiver.OnScaleChanged(_customScale);
+                receiver.SendCustomEvent("OnScaleChanged");
             }
 
             if (!isSynced) return;
@@ -81,15 +81,10 @@ namespace jp.ootr.CustomScaler
             Sync();
         }
 
-        public void AddEventListener(IScaleEventReceiver listener)
+        public void AddEventListener(UdonSharpBehaviour listener)
         {
             if (listener == null) return;
             ScaleEventReceivers = ScaleEventReceivers.Append(listener);
         }
-    }
-    
-    public abstract class IScaleEventReceiver : UdonSharpBehaviour
-    {
-        public abstract void OnScaleChanged(int scale);
     }
 }
