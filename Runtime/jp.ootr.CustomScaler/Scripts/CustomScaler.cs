@@ -86,5 +86,15 @@ namespace jp.ootr.CustomScaler
             if (listener == null) return;
             ScaleEventReceivers = ScaleEventReceivers.Append(listener);
         }
+        
+        public override string GetClassName()
+        {
+            return "jp.ootr.CustomScaler.CustomScaler";
+        }
+
+        public override string GetDisplayName()
+        {
+            return "CustomScaler";
+        }
     }
 }
