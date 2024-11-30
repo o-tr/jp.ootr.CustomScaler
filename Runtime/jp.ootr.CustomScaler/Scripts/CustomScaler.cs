@@ -37,7 +37,7 @@ namespace jp.ootr.CustomScaler
             ApplyScale();
         }
 
-        private void ApplyScale()
+        private void ApplyScale(bool shouldSync = true)
         {
             _customScale = Mathf.Clamp(_customScale, minScale, maxScale);
             var scale = _customScale / (float)scaleResolution;
@@ -60,7 +60,7 @@ namespace jp.ootr.CustomScaler
                 receiver.SendCustomEvent("OnScaleChanged");
             }
 
-            if (!isSynced) return;
+            if (!isSynced || _syncedScale == _customScale || !shouldSync) return;
             _syncedScale = _customScale;
             Sync();
         }
@@ -70,7 +70,7 @@ namespace jp.ootr.CustomScaler
             base._OnDeserialization();
             if (!isSynced) return;
             _customScale = _syncedScale;
-            ApplyScale();
+            ApplyScale(false);
         }
 
         public override void OnPlayerJoined(VRCPlayerApi player)
